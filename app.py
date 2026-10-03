@@ -2,7 +2,7 @@
 
 import sqlite3
 
-from flask import Flask, g, render_template, request
+from flask import Flask, g, render_template, request, send_from_directory
 from markupsafe import Markup
 
 
@@ -29,11 +29,12 @@ def close_database(_error):
 
 @app.get("/")
 def index():
-    return (
-        "Laboratorio Semgrep. Prueba /inseguro/buscar?nombre=ana, "
-        "/seguro/buscar?nombre=ana, /inseguro/saludo?nombre=ana y "
-        "/seguro/saludo?nombre=ana. Solo para uso local autorizado."
-    )
+    return render_template("index.html")
+
+
+@app.get("/reporte")
+def reporte():
+    return send_from_directory("reportes", "semgrep.html")
 
 
 @app.get("/inseguro/buscar")

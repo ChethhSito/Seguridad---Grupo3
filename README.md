@@ -24,7 +24,7 @@ En Linux/macOS cambia las rutas del entorno virtual por `.venv/bin/python`.
 .\.venv\Scripts\python.exe app.py
 ```
 
-Abre `http://127.0.0.1:5000/`. Las rutas son:
+Abre `http://127.0.0.1:5000/`. La página inicial tiene formularios para probar cada caso y un enlace al reporte de Semgrep. Las rutas son:
 
 | Caso | Vulnerable | Corregida |
 | --- | --- | --- |

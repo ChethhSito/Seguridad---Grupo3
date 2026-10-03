@@ -57,14 +57,14 @@
         <span class="severity">ERROR</span>
       </div>
       <p class="message">Consulta SQL construida con f-string: usa parametros de sqlite3.</p>
-      <div class="location">app.py · línea 42–44</div>
-      <pre><code><span class="code-line"><span class="line-no">040</span><span>def buscar_inseguro():</span></span>
-<span class="code-line"><span class="line-no">041</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
-<span class="code-line active"><span class="line-no">042</span><span>    rows = database().execute(</span></span>
-<span class="code-line active"><span class="line-no">043</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
-<span class="code-line active"><span class="line-no">044</span><span>    ).fetchall()</span></span>
-<span class="code-line"><span class="line-no">045</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span>
-<span class="code-line"><span class="line-no">046</span><span></span></span></code></pre>
+      <div class="location">app.py · línea 43–45</div>
+      <pre><code><span class="code-line"><span class="line-no">041</span><span>def buscar_inseguro():</span></span>
+<span class="code-line"><span class="line-no">042</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">043</span><span>    rows = database().execute(</span></span>
+<span class="code-line active"><span class="line-no">044</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
+<span class="code-line active"><span class="line-no">045</span><span>    ).fetchall()</span></span>
+<span class="code-line"><span class="line-no">046</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span>
+<span class="code-line"><span class="line-no">047</span><span></span></span></code></pre>
     </article>
     <article class="finding" data-category="xss">
       <div class="finding-head">
@@ -74,12 +74,12 @@
         <span class="severity">ERROR</span>
       </div>
       <p class="message">HTML marcado como seguro con datos interpolados: usa autoescape de Jinja.</p>
-      <div class="location">app.py · línea 60</div>
-      <pre><code><span class="code-line"><span class="line-no">058</span><span>def saludo_inseguro():</span></span>
-<span class="code-line"><span class="line-no">059</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
-<span class="code-line active"><span class="line-no">060</span><span>    return Markup(f&quot;&lt;h1&gt;Hola, {name}&lt;/h1&gt;&quot;)</span></span>
-<span class="code-line"><span class="line-no">061</span><span></span></span>
-<span class="code-line"><span class="line-no">062</span><span></span></span></code></pre>
+      <div class="location">app.py · línea 61</div>
+      <pre><code><span class="code-line"><span class="line-no">059</span><span>def saludo_inseguro():</span></span>
+<span class="code-line"><span class="line-no">060</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">061</span><span>    return Markup(f&quot;&lt;h1&gt;Hola, {name}&lt;/h1&gt;&quot;)</span></span>
+<span class="code-line"><span class="line-no">062</span><span></span></span>
+<span class="code-line"><span class="line-no">063</span><span></span></span></code></pre>
     </article>
   <h2>Reglas comunitarias</h2><p class="section-intro">Escaneo con <code>--config auto</code>. El número puede cambiar cuando Semgrep actualice sus reglas.</p>
   
@@ -91,15 +91,15 @@
         <span class="severity">WARNING</span>
       </div>
       <p class="message">User-controlled data from a request is passed to &#x27;execute()&#x27;. This could lead to a SQL injection and therefore protected information could be leaked. Instead, use django&#x27;s QuerySets, which are built with query parameterization and therefore not vulnerable to sql injection. For example, you could use `Entry.objects.filter(date=2006)`.</p>
-      <div class="location">app.py · línea 41–44</div>
-      <pre><code><span class="code-line"><span class="line-no">039</span><span>@app.get(&quot;/inseguro/buscar&quot;)</span></span>
-<span class="code-line"><span class="line-no">040</span><span>def buscar_inseguro():</span></span>
-<span class="code-line active"><span class="line-no">041</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
-<span class="code-line active"><span class="line-no">042</span><span>    rows = database().execute(</span></span>
-<span class="code-line active"><span class="line-no">043</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
-<span class="code-line active"><span class="line-no">044</span><span>    ).fetchall()</span></span>
-<span class="code-line"><span class="line-no">045</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span>
-<span class="code-line"><span class="line-no">046</span><span></span></span></code></pre>
+      <div class="location">app.py · línea 42–45</div>
+      <pre><code><span class="code-line"><span class="line-no">040</span><span>@app.get(&quot;/inseguro/buscar&quot;)</span></span>
+<span class="code-line"><span class="line-no">041</span><span>def buscar_inseguro():</span></span>
+<span class="code-line active"><span class="line-no">042</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">043</span><span>    rows = database().execute(</span></span>
+<span class="code-line active"><span class="line-no">044</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
+<span class="code-line active"><span class="line-no">045</span><span>    ).fetchall()</span></span>
+<span class="code-line"><span class="line-no">046</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span>
+<span class="code-line"><span class="line-no">047</span><span></span></span></code></pre>
     </article>
     <article class="finding" data-category="sql">
       <div class="finding-head">
@@ -109,14 +109,14 @@
         <span class="severity">WARNING</span>
       </div>
       <p class="message">Detected possible formatted SQL query. Use parameterized queries instead.</p>
-      <div class="location">app.py · línea 42–44</div>
-      <pre><code><span class="code-line"><span class="line-no">040</span><span>def buscar_inseguro():</span></span>
-<span class="code-line"><span class="line-no">041</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
-<span class="code-line active"><span class="line-no">042</span><span>    rows = database().execute(</span></span>
-<span class="code-line active"><span class="line-no">043</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
-<span class="code-line active"><span class="line-no">044</span><span>    ).fetchall()</span></span>
-<span class="code-line"><span class="line-no">045</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span>
-<span class="code-line"><span class="line-no">046</span><span></span></span></code></pre>
+      <div class="location">app.py · línea 43–45</div>
+      <pre><code><span class="code-line"><span class="line-no">041</span><span>def buscar_inseguro():</span></span>
+<span class="code-line"><span class="line-no">042</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">043</span><span>    rows = database().execute(</span></span>
+<span class="code-line active"><span class="line-no">044</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
+<span class="code-line active"><span class="line-no">045</span><span>    ).fetchall()</span></span>
+<span class="code-line"><span class="line-no">046</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span>
+<span class="code-line"><span class="line-no">047</span><span></span></span></code></pre>
     </article>
     <article class="finding" data-category="sql">
       <div class="finding-head">
@@ -126,14 +126,14 @@
         <span class="severity">ERROR</span>
       </div>
       <p class="message">Avoiding SQL string concatenation: untrusted input concatenated with raw SQL query can result in SQL Injection. In order to execute raw query safely, prepared statement should be used. SQLAlchemy provides TextualSQL to easily used prepared statement with named parameters. For complex SQL composition, use SQL Expression Language or Schema Definition Language. In most cases, SQLAlchemy ORM will be a better option.</p>
-      <div class="location">app.py · línea 42–44</div>
-      <pre><code><span class="code-line"><span class="line-no">040</span><span>def buscar_inseguro():</span></span>
-<span class="code-line"><span class="line-no">041</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
-<span class="code-line active"><span class="line-no">042</span><span>    rows = database().execute(</span></span>
-<span class="code-line active"><span class="line-no">043</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
-<span class="code-line active"><span class="line-no">044</span><span>    ).fetchall()</span></span>
-<span class="code-line"><span class="line-no">045</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span>
-<span class="code-line"><span class="line-no">046</span><span></span></span></code></pre>
+      <div class="location">app.py · línea 43–45</div>
+      <pre><code><span class="code-line"><span class="line-no">041</span><span>def buscar_inseguro():</span></span>
+<span class="code-line"><span class="line-no">042</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">043</span><span>    rows = database().execute(</span></span>
+<span class="code-line active"><span class="line-no">044</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
+<span class="code-line active"><span class="line-no">045</span><span>    ).fetchall()</span></span>
+<span class="code-line"><span class="line-no">046</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span>
+<span class="code-line"><span class="line-no">047</span><span></span></span></code></pre>
     </article>
     <article class="finding" data-category="sql">
       <div class="finding-head">
@@ -143,12 +143,12 @@
         <span class="severity">ERROR</span>
       </div>
       <p class="message">Detected user input used to manually construct a SQL string. This is usually bad practice because manual construction could accidentally result in a SQL injection. An attacker could use a SQL injection to steal or modify contents of the database. Instead, use a parameterized query which is available by default in most database engines. Alternatively, consider using the Django object-relational mappers (ORM) instead of raw SQL queries.</p>
-      <div class="location">app.py · línea 43</div>
-      <pre><code><span class="code-line"><span class="line-no">041</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
-<span class="code-line"><span class="line-no">042</span><span>    rows = database().execute(</span></span>
-<span class="code-line active"><span class="line-no">043</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
-<span class="code-line"><span class="line-no">044</span><span>    ).fetchall()</span></span>
-<span class="code-line"><span class="line-no">045</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span></code></pre>
+      <div class="location">app.py · línea 44</div>
+      <pre><code><span class="code-line"><span class="line-no">042</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line"><span class="line-no">043</span><span>    rows = database().execute(</span></span>
+<span class="code-line active"><span class="line-no">044</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
+<span class="code-line"><span class="line-no">045</span><span>    ).fetchall()</span></span>
+<span class="code-line"><span class="line-no">046</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span></code></pre>
     </article>
     <article class="finding" data-category="sql">
       <div class="finding-head">
@@ -158,12 +158,12 @@
         <span class="severity">ERROR</span>
       </div>
       <p class="message">Detected user input used to manually construct a SQL string. This is usually bad practice because manual construction could accidentally result in a SQL injection. An attacker could use a SQL injection to steal or modify contents of the database. Instead, use a parameterized query which is available by default in most database engines. Alternatively, consider using an object-relational mapper (ORM) such as SQLAlchemy which will protect your queries.</p>
-      <div class="location">app.py · línea 43</div>
-      <pre><code><span class="code-line"><span class="line-no">041</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
-<span class="code-line"><span class="line-no">042</span><span>    rows = database().execute(</span></span>
-<span class="code-line active"><span class="line-no">043</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
-<span class="code-line"><span class="line-no">044</span><span>    ).fetchall()</span></span>
-<span class="code-line"><span class="line-no">045</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span></code></pre>
+      <div class="location">app.py · línea 44</div>
+      <pre><code><span class="code-line"><span class="line-no">042</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line"><span class="line-no">043</span><span>    rows = database().execute(</span></span>
+<span class="code-line active"><span class="line-no">044</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
+<span class="code-line"><span class="line-no">045</span><span>    ).fetchall()</span></span>
+<span class="code-line"><span class="line-no">046</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span></code></pre>
     </article>
     <article class="finding" data-category="xss">
       <div class="finding-head">
@@ -173,12 +173,12 @@
         <span class="severity">WARNING</span>
       </div>
       <p class="message">Detected explicitly unescaped content using &#x27;Markup()&#x27;. This permits the unescaped data to include unescaped HTML which could result in cross-site scripting. Ensure this data is not externally controlled, or consider rewriting to not use &#x27;Markup()&#x27;.</p>
-      <div class="location">app.py · línea 60</div>
-      <pre><code><span class="code-line"><span class="line-no">058</span><span>def saludo_inseguro():</span></span>
-<span class="code-line"><span class="line-no">059</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
-<span class="code-line active"><span class="line-no">060</span><span>    return Markup(f&quot;&lt;h1&gt;Hola, {name}&lt;/h1&gt;&quot;)</span></span>
-<span class="code-line"><span class="line-no">061</span><span></span></span>
-<span class="code-line"><span class="line-no">062</span><span></span></span></code></pre>
+      <div class="location">app.py · línea 61</div>
+      <pre><code><span class="code-line"><span class="line-no">059</span><span>def saludo_inseguro():</span></span>
+<span class="code-line"><span class="line-no">060</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">061</span><span>    return Markup(f&quot;&lt;h1&gt;Hola, {name}&lt;/h1&gt;&quot;)</span></span>
+<span class="code-line"><span class="line-no">062</span><span></span></span>
+<span class="code-line"><span class="line-no">063</span><span></span></span></code></pre>
     </article>
     <article class="finding" data-category="xss">
       <div class="finding-head">
@@ -188,12 +188,12 @@
         <span class="severity">WARNING</span>
       </div>
       <p class="message">Detected user input flowing into a manually constructed HTML string. You may be accidentally bypassing secure methods of rendering HTML by manually constructing HTML and this could create a cross-site scripting vulnerability, which could let attackers steal sensitive user data. To be sure this is safe, check that the HTML is rendered safely. Otherwise, use templates (`django.shortcuts.render`) which will safely render HTML instead.</p>
-      <div class="location">app.py · línea 60</div>
-      <pre><code><span class="code-line"><span class="line-no">058</span><span>def saludo_inseguro():</span></span>
-<span class="code-line"><span class="line-no">059</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
-<span class="code-line active"><span class="line-no">060</span><span>    return Markup(f&quot;&lt;h1&gt;Hola, {name}&lt;/h1&gt;&quot;)</span></span>
-<span class="code-line"><span class="line-no">061</span><span></span></span>
-<span class="code-line"><span class="line-no">062</span><span></span></span></code></pre>
+      <div class="location">app.py · línea 61</div>
+      <pre><code><span class="code-line"><span class="line-no">059</span><span>def saludo_inseguro():</span></span>
+<span class="code-line"><span class="line-no">060</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">061</span><span>    return Markup(f&quot;&lt;h1&gt;Hola, {name}&lt;/h1&gt;&quot;)</span></span>
+<span class="code-line"><span class="line-no">062</span><span></span></span>
+<span class="code-line"><span class="line-no">063</span><span></span></span></code></pre>
     </article>
     <article class="finding" data-category="xss">
       <div class="finding-head">
@@ -203,12 +203,12 @@
         <span class="severity">WARNING</span>
       </div>
       <p class="message">Detected user input flowing into a manually constructed HTML string. You may be accidentally bypassing secure methods of rendering HTML by manually constructing HTML and this could create a cross-site scripting vulnerability, which could let attackers steal sensitive user data. To be sure this is safe, check that the HTML is rendered safely. Otherwise, use templates (`flask.render_template`) which will safely render HTML instead.</p>
-      <div class="location">app.py · línea 60</div>
-      <pre><code><span class="code-line"><span class="line-no">058</span><span>def saludo_inseguro():</span></span>
-<span class="code-line"><span class="line-no">059</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
-<span class="code-line active"><span class="line-no">060</span><span>    return Markup(f&quot;&lt;h1&gt;Hola, {name}&lt;/h1&gt;&quot;)</span></span>
-<span class="code-line"><span class="line-no">061</span><span></span></span>
-<span class="code-line"><span class="line-no">062</span><span></span></span></code></pre>
+      <div class="location">app.py · línea 61</div>
+      <pre><code><span class="code-line"><span class="line-no">059</span><span>def saludo_inseguro():</span></span>
+<span class="code-line"><span class="line-no">060</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">061</span><span>    return Markup(f&quot;&lt;h1&gt;Hola, {name}&lt;/h1&gt;&quot;)</span></span>
+<span class="code-line"><span class="line-no">062</span><span></span></span>
+<span class="code-line"><span class="line-no">063</span><span></span></span></code></pre>
     </article>
   <h2>Cómo se corrigieron los ejemplos</h2>
   <div class="explain"><div><strong>Consulta SQL</strong>La ruta segura usa <code>WHERE username = ?</code> y entrega el nombre como parámetro separado. Así el dato no se interpreta como parte de la instrucción SQL.</div>
