@@ -29,6 +29,7 @@
     .pill.sql { background:#fff0dc; color:#92500a; } .pill.xss { background:#fce9ef; color:#a22c53; } .pill.other { background:#e9ecff; color:#374ca0; }
     .severity { color:#9a3043; background:#fff0f1; }
     .message { margin:14px 0 9px; } .location { color:var(--muted); font-size:.9rem; margin-bottom:9px; }
+    details { color:var(--muted); font-size:.88rem; margin:8px 0 13px; } summary { cursor:pointer; } details p { margin:8px 0; }
     pre { margin:0; background:#102b3b; color:#e9f3f6; border-radius:10px; padding:12px 0; overflow-x:auto; font:13px/1.55 Consolas,monospace; }
     .code-line { display:flex; padding:0 14px; white-space:pre; } .code-line.active { background:#185069; border-left:3px solid #59d3b6; padding-left:11px; }
     .line-no { flex:none; width:45px; color:#91aebc; user-select:none; }
@@ -57,6 +58,7 @@
         <span class="severity">ERROR</span>
       </div>
       <p class="message">Consulta SQL construida con f-string: usa parametros de sqlite3.</p>
+      
       <div class="location">app.py · línea 43–45</div>
       <pre><code><span class="code-line"><span class="line-no">041</span><span>def buscar_inseguro():</span></span>
 <span class="code-line"><span class="line-no">042</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
@@ -74,6 +76,7 @@
         <span class="severity">ERROR</span>
       </div>
       <p class="message">HTML marcado como seguro con datos interpolados: usa autoescape de Jinja.</p>
+      
       <div class="location">app.py · línea 61</div>
       <pre><code><span class="code-line"><span class="line-no">059</span><span>def saludo_inseguro():</span></span>
 <span class="code-line"><span class="line-no">060</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
@@ -81,7 +84,7 @@
 <span class="code-line"><span class="line-no">062</span><span></span></span>
 <span class="code-line"><span class="line-no">063</span><span></span></span></code></pre>
     </article>
-  <h2>Reglas comunitarias</h2><p class="section-intro">Escaneo con <code>--config auto</code>. El número puede cambiar cuando Semgrep actualice sus reglas.</p>
+  <h2>Reglas comunitarias</h2><p class="section-intro">Explicaciones en español de los avisos de <code>--config auto</code>. Conservamos los identificadores y el mensaje original para poder comprobar cada resultado. El número puede cambiar cuando Semgrep actualice sus reglas.</p>
   
     <article class="finding" data-category="sql">
       <div class="finding-head">
@@ -90,7 +93,8 @@
           <h3>python.django.security.injection.sql.sql-injection-using-db-cursor-execute.sql-injection-db-cursor-execute</h3></div>
         <span class="severity">WARNING</span>
       </div>
-      <p class="message">User-controlled data from a request is passed to &#x27;execute()&#x27;. This could lead to a SQL injection and therefore protected information could be leaked. Instead, use django&#x27;s QuerySets, which are built with query parameterization and therefore not vulnerable to sql injection. For example, you could use `Entry.objects.filter(date=2006)`.</p>
+      <p class="message">Una entrada de la petición llega a execute() dentro de una consulta SQL. La consulta podría cambiar por los datos ingresados. En este laboratorio se corrige con parámetros de sqlite3; la referencia a Django en la regla original no aplica a esta aplicación Flask.</p>
+      <details><summary>Ver mensaje original de Semgrep (inglés)</summary><p>User-controlled data from a request is passed to &#x27;execute()&#x27;. This could lead to a SQL injection and therefore protected information could be leaked. Instead, use django&#x27;s QuerySets, which are built with query parameterization and therefore not vulnerable to sql injection. For example, you could use `Entry.objects.filter(date=2006)`.</p></details>
       <div class="location">app.py · línea 42–45</div>
       <pre><code><span class="code-line"><span class="line-no">040</span><span>@app.get(&quot;/inseguro/buscar&quot;)</span></span>
 <span class="code-line"><span class="line-no">041</span><span>def buscar_inseguro():</span></span>
@@ -108,7 +112,8 @@
           <h3>python.lang.security.audit.formatted-sql-query.formatted-sql-query</h3></div>
         <span class="severity">WARNING</span>
       </div>
-      <p class="message">Detected possible formatted SQL query. Use parameterized queries instead.</p>
+      <p class="message">La consulta SQL se construye con formato de texto. Usa parámetros para separar el dato de la instrucción SQL.</p>
+      <details><summary>Ver mensaje original de Semgrep (inglés)</summary><p>Detected possible formatted SQL query. Use parameterized queries instead.</p></details>
       <div class="location">app.py · línea 43–45</div>
       <pre><code><span class="code-line"><span class="line-no">041</span><span>def buscar_inseguro():</span></span>
 <span class="code-line"><span class="line-no">042</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
@@ -125,7 +130,8 @@
           <h3>python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query</h3></div>
         <span class="severity">ERROR</span>
       </div>
-      <p class="message">Avoiding SQL string concatenation: untrusted input concatenated with raw SQL query can result in SQL Injection. In order to execute raw query safely, prepared statement should be used. SQLAlchemy provides TextualSQL to easily used prepared statement with named parameters. For complex SQL composition, use SQL Expression Language or Schema Definition Language. In most cases, SQLAlchemy ORM will be a better option.</p>
+      <p class="message">La regla advierte sobre SQL construido con datos no confiables. Aunque menciona SQLAlchemy, este laboratorio usa sqlite3; la corrección correspondiente es una consulta parametrizada.</p>
+      <details><summary>Ver mensaje original de Semgrep (inglés)</summary><p>Avoiding SQL string concatenation: untrusted input concatenated with raw SQL query can result in SQL Injection. In order to execute raw query safely, prepared statement should be used. SQLAlchemy provides TextualSQL to easily used prepared statement with named parameters. For complex SQL composition, use SQL Expression Language or Schema Definition Language. In most cases, SQLAlchemy ORM will be a better option.</p></details>
       <div class="location">app.py · línea 43–45</div>
       <pre><code><span class="code-line"><span class="line-no">041</span><span>def buscar_inseguro():</span></span>
 <span class="code-line"><span class="line-no">042</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
@@ -142,7 +148,8 @@
           <h3>python.django.security.injection.tainted-sql-string.tainted-sql-string</h3></div>
         <span class="severity">ERROR</span>
       </div>
-      <p class="message">Detected user input used to manually construct a SQL string. This is usually bad practice because manual construction could accidentally result in a SQL injection. An attacker could use a SQL injection to steal or modify contents of the database. Instead, use a parameterized query which is available by default in most database engines. Alternatively, consider using the Django object-relational mappers (ORM) instead of raw SQL queries.</p>
+      <p class="message">La entrada del usuario se incorpora manualmente a una cadena SQL. Esto puede alterar la consulta. La recomendación aplicable aquí es usar parámetros de sqlite3, aunque la regla se originó para Django.</p>
+      <details><summary>Ver mensaje original de Semgrep (inglés)</summary><p>Detected user input used to manually construct a SQL string. This is usually bad practice because manual construction could accidentally result in a SQL injection. An attacker could use a SQL injection to steal or modify contents of the database. Instead, use a parameterized query which is available by default in most database engines. Alternatively, consider using the Django object-relational mappers (ORM) instead of raw SQL queries.</p></details>
       <div class="location">app.py · línea 44</div>
       <pre><code><span class="code-line"><span class="line-no">042</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
 <span class="code-line"><span class="line-no">043</span><span>    rows = database().execute(</span></span>
@@ -157,7 +164,8 @@
           <h3>python.flask.security.injection.tainted-sql-string.tainted-sql-string</h3></div>
         <span class="severity">ERROR</span>
       </div>
-      <p class="message">Detected user input used to manually construct a SQL string. This is usually bad practice because manual construction could accidentally result in a SQL injection. An attacker could use a SQL injection to steal or modify contents of the database. Instead, use a parameterized query which is available by default in most database engines. Alternatively, consider using an object-relational mapper (ORM) such as SQLAlchemy which will protect your queries.</p>
+      <p class="message">La entrada del usuario se incorpora manualmente a una consulta SQL en Flask. Usa una consulta parametrizada para evitar que el valor cambie la instrucción.</p>
+      <details><summary>Ver mensaje original de Semgrep (inglés)</summary><p>Detected user input used to manually construct a SQL string. This is usually bad practice because manual construction could accidentally result in a SQL injection. An attacker could use a SQL injection to steal or modify contents of the database. Instead, use a parameterized query which is available by default in most database engines. Alternatively, consider using an object-relational mapper (ORM) such as SQLAlchemy which will protect your queries.</p></details>
       <div class="location">app.py · línea 44</div>
       <pre><code><span class="code-line"><span class="line-no">042</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
 <span class="code-line"><span class="line-no">043</span><span>    rows = database().execute(</span></span>
@@ -172,7 +180,8 @@
           <h3>python.flask.security.xss.audit.explicit-unescape-with-markup.explicit-unescape-with-markup</h3></div>
         <span class="severity">WARNING</span>
       </div>
-      <p class="message">Detected explicitly unescaped content using &#x27;Markup()&#x27;. This permits the unescaped data to include unescaped HTML which could result in cross-site scripting. Ensure this data is not externally controlled, or consider rewriting to not use &#x27;Markup()&#x27;.</p>
+      <p class="message">Markup() trata el HTML interpolado como seguro y evita el escape. Si la entrada procede del usuario, puede mostrarse como HTML ejecutable. Usa una plantilla con autoescape.</p>
+      <details><summary>Ver mensaje original de Semgrep (inglés)</summary><p>Detected explicitly unescaped content using &#x27;Markup()&#x27;. This permits the unescaped data to include unescaped HTML which could result in cross-site scripting. Ensure this data is not externally controlled, or consider rewriting to not use &#x27;Markup()&#x27;.</p></details>
       <div class="location">app.py · línea 61</div>
       <pre><code><span class="code-line"><span class="line-no">059</span><span>def saludo_inseguro():</span></span>
 <span class="code-line"><span class="line-no">060</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
@@ -187,7 +196,8 @@
           <h3>python.django.security.injection.raw-html-format.raw-html-format</h3></div>
         <span class="severity">WARNING</span>
       </div>
-      <p class="message">Detected user input flowing into a manually constructed HTML string. You may be accidentally bypassing secure methods of rendering HTML by manually constructing HTML and this could create a cross-site scripting vulnerability, which could let attackers steal sensitive user data. To be sure this is safe, check that the HTML is rendered safely. Otherwise, use templates (`django.shortcuts.render`) which will safely render HTML instead.</p>
+      <p class="message">La entrada del usuario aparece dentro de HTML construido manualmente. Esto puede permitir XSS. La regla menciona Django, pero en esta aplicación Flask se usa una plantilla con autoescape.</p>
+      <details><summary>Ver mensaje original de Semgrep (inglés)</summary><p>Detected user input flowing into a manually constructed HTML string. You may be accidentally bypassing secure methods of rendering HTML by manually constructing HTML and this could create a cross-site scripting vulnerability, which could let attackers steal sensitive user data. To be sure this is safe, check that the HTML is rendered safely. Otherwise, use templates (`django.shortcuts.render`) which will safely render HTML instead.</p></details>
       <div class="location">app.py · línea 61</div>
       <pre><code><span class="code-line"><span class="line-no">059</span><span>def saludo_inseguro():</span></span>
 <span class="code-line"><span class="line-no">060</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
@@ -202,7 +212,8 @@
           <h3>python.flask.security.injection.raw-html-concat.raw-html-format</h3></div>
         <span class="severity">WARNING</span>
       </div>
-      <p class="message">Detected user input flowing into a manually constructed HTML string. You may be accidentally bypassing secure methods of rendering HTML by manually constructing HTML and this could create a cross-site scripting vulnerability, which could let attackers steal sensitive user data. To be sure this is safe, check that the HTML is rendered safely. Otherwise, use templates (`flask.render_template`) which will safely render HTML instead.</p>
+      <p class="message">La entrada del usuario aparece dentro de HTML construido manualmente en Flask. Utiliza render_template con una variable normal para que Jinja escape el contenido.</p>
+      <details><summary>Ver mensaje original de Semgrep (inglés)</summary><p>Detected user input flowing into a manually constructed HTML string. You may be accidentally bypassing secure methods of rendering HTML by manually constructing HTML and this could create a cross-site scripting vulnerability, which could let attackers steal sensitive user data. To be sure this is safe, check that the HTML is rendered safely. Otherwise, use templates (`flask.render_template`) which will safely render HTML instead.</p></details>
       <div class="location">app.py · línea 61</div>
       <pre><code><span class="code-line"><span class="line-no">059</span><span>def saludo_inseguro():</span></span>
 <span class="code-line"><span class="line-no">060</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>

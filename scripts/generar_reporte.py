@@ -12,6 +12,25 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "reportes" / "semgrep.html"
 SOURCE = ROOT / "app.py"
 
+COMMUNITY_EXPLANATIONS = {
+    "python.django.security.injection.sql.sql-injection-using-db-cursor-execute.sql-injection-db-cursor-execute":
+        "Una entrada de la petición llega a execute() dentro de una consulta SQL. La consulta podría cambiar por los datos ingresados. En este laboratorio se corrige con parámetros de sqlite3; la referencia a Django en la regla original no aplica a esta aplicación Flask.",
+    "python.lang.security.audit.formatted-sql-query.formatted-sql-query":
+        "La consulta SQL se construye con formato de texto. Usa parámetros para separar el dato de la instrucción SQL.",
+    "python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query":
+        "La regla advierte sobre SQL construido con datos no confiables. Aunque menciona SQLAlchemy, este laboratorio usa sqlite3; la corrección correspondiente es una consulta parametrizada.",
+    "python.django.security.injection.tainted-sql-string.tainted-sql-string":
+        "La entrada del usuario se incorpora manualmente a una cadena SQL. Esto puede alterar la consulta. La recomendación aplicable aquí es usar parámetros de sqlite3, aunque la regla se originó para Django.",
+    "python.flask.security.injection.tainted-sql-string.tainted-sql-string":
+        "La entrada del usuario se incorpora manualmente a una consulta SQL en Flask. Usa una consulta parametrizada para evitar que el valor cambie la instrucción.",
+    "python.flask.security.xss.audit.explicit-unescape-with-markup.explicit-unescape-with-markup":
+        "Markup() trata el HTML interpolado como seguro y evita el escape. Si la entrada procede del usuario, puede mostrarse como HTML ejecutable. Usa una plantilla con autoescape.",
+    "python.django.security.injection.raw-html-format.raw-html-format":
+        "La entrada del usuario aparece dentro de HTML construido manualmente. Esto puede permitir XSS. La regla menciona Django, pero en esta aplicación Flask se usa una plantilla con autoescape.",
+    "python.flask.security.injection.raw-html-concat.raw-html-format":
+        "La entrada del usuario aparece dentro de HTML construido manualmente en Flask. Utiliza render_template con una variable normal para que Jinja escape el contenido.",
+}
+
 
 def esc(value):
     return html.escape(str(value), quote=True)
@@ -60,11 +79,17 @@ def context(source_lines, start, end):
     return "\n".join(rows)
 
 
-def card(item, source_lines, index):
+def card(item, source_lines, index, community=False):
     label, category = kind(item)
     start = item["start"]["line"]
     end = item["end"]["line"]
-    message = item.get("extra", {}).get("message", "Sin descripcion")
+    original_message = item.get("extra", {}).get("message", "Sin descripción")
+    message = COMMUNITY_EXPLANATIONS.get(item["check_id"], original_message) if community else original_message
+    original = (
+        f'<details><summary>Ver mensaje original de Semgrep (inglés)</summary>'
+        f'<p>{esc(original_message)}</p></details>'
+        if community and item["check_id"] in COMMUNITY_EXPLANATIONS else ""
+    )
     severity = item.get("extra", {}).get("severity", "INFO")
     return f"""
     <article class="finding" data-category="{category}">
@@ -75,6 +100,7 @@ def card(item, source_lines, index):
         <span class="severity">{esc(severity)}</span>
       </div>
       <p class="message">{esc(message)}</p>
+      {original}
       <div class="location">app.py · línea {start}{f'–{end}' if end != start else ''}</div>
       <pre><code>{context(source_lines, start, end)}</code></pre>
     </article>"""
@@ -85,7 +111,7 @@ def main():
     community = scan("auto")
     source_lines = SOURCE.read_text(encoding="utf-8").splitlines()
     custom_cards = "".join(card(item, source_lines, i) for i, item in enumerate(custom, 1))
-    community_cards = "".join(card(item, source_lines, i) for i, item in enumerate(community, 1))
+    community_cards = "".join(card(item, source_lines, i, community=True) for i, item in enumerate(community, 1))
     page = f"""<!doctype html>
 <html lang="es">
 <head>
@@ -117,6 +143,7 @@ def main():
     .pill.sql {{ background:#fff0dc; color:#92500a; }} .pill.xss {{ background:#fce9ef; color:#a22c53; }} .pill.other {{ background:#e9ecff; color:#374ca0; }}
     .severity {{ color:#9a3043; background:#fff0f1; }}
     .message {{ margin:14px 0 9px; }} .location {{ color:var(--muted); font-size:.9rem; margin-bottom:9px; }}
+    details {{ color:var(--muted); font-size:.88rem; margin:8px 0 13px; }} summary {{ cursor:pointer; }} details p {{ margin:8px 0; }}
     pre {{ margin:0; background:#102b3b; color:#e9f3f6; border-radius:10px; padding:12px 0; overflow-x:auto; font:13px/1.55 Consolas,monospace; }}
     .code-line {{ display:flex; padding:0 14px; white-space:pre; }} .code-line.active {{ background:#185069; border-left:3px solid #59d3b6; padding-left:11px; }}
     .line-no {{ flex:none; width:45px; color:#91aebc; user-select:none; }}
@@ -137,7 +164,7 @@ def main():
   <div class="notice"><strong>Cómo leer el reporte.</strong> Los avisos comunitarios pueden señalar varias veces el mismo fragmento. {len(community)} avisos no significan {len(community)} vulnerabilidades distintas. Revisa cada resultado en su contexto.</div>
   <h2>Reglas del proyecto</h2><p class="section-intro">Dos patrones diseñados para explicar la diferencia entre código inseguro y corregido.</p>
   {custom_cards}
-  <h2>Reglas comunitarias</h2><p class="section-intro">Escaneo con <code>--config auto</code>. El número puede cambiar cuando Semgrep actualice sus reglas.</p>
+  <h2>Reglas comunitarias</h2><p class="section-intro">Explicaciones en español de los avisos de <code>--config auto</code>. Conservamos los identificadores y el mensaje original para poder comprobar cada resultado. El número puede cambiar cuando Semgrep actualice sus reglas.</p>
   {community_cards}
   <h2>Cómo se corrigieron los ejemplos</h2>
   <div class="explain"><div><strong>Consulta SQL</strong>La ruta segura usa <code>WHERE username = ?</code> y entrega el nombre como parámetro separado. Así el dato no se interpreta como parte de la instrucción SQL.</div>

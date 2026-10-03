@@ -58,6 +58,8 @@ Ya se incluye [un reporte HTML listo para abrir](reportes/semgrep.html). Haz dob
 
 El generador ejecuta Semgrep dos veces: con `reglas.yml` y con `--config auto`. La segunda ejecución puede requerir conexión para obtener las reglas comunitarias. El HTML es autocontenido y se puede abrir después sin conexión.
 
+Los avisos comunitarios se explican en español en el reporte. Cada tarjeta conserva el identificador de la regla y permite desplegar el mensaje original en inglés para contrastarlo con la salida de Semgrep.
+
 ## Qué demuestra cada regla
 
 - `laboratorio-sql-fstring`: detecta una llamada `execute` con una consulta construida por `f-string`. La ruta segura usa un marcador `?` y pasa el valor como parámetro.
