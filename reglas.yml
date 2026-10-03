@@ -1,0 +1,19 @@
+rules:
+  - id: laboratorio-sql-fstring
+    message: "Consulta SQL construida con f-string: usa parametros de sqlite3."
+    languages: [python]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-89: SQL Injection"
+    pattern: $DB.execute(f"...")
+
+  - id: laboratorio-html-markup-fstring
+    message: "HTML marcado como seguro con datos interpolados: usa autoescape de Jinja."
+    languages: [python]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-79: Cross-site Scripting"
+    pattern: Markup(f"...")
+
