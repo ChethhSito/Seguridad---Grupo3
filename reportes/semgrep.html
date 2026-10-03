@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reporte Semgrep · Grupo 3</title>
+  <style>
+    :root { color-scheme: light; --ink:#182a37; --muted:#657783; --line:#dbe3e8; --navy:#0c2533; --teal:#047f72; --paper:#f4f7f8; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif; }
+    header { background:linear-gradient(125deg,#0c2533,#154755); color:#fff; padding:42px max(24px,calc((100vw - 1100px)/2)); }
+    .eyebrow { color:#8de2ce; text-transform:uppercase; letter-spacing:.16em; font-size:.78rem; font-weight:800; }
+    h1 { margin:.35rem 0 .3rem; font-size:clamp(2rem,5vw,3.2rem); letter-spacing:-.04em; }
+    .subtitle { max-width:700px; color:#c5d9df; margin:0; }
+    main { max-width:1100px; margin:0 auto; padding:30px 24px 70px; }
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:-55px 0 32px; position:relative; }
+    .stat { background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px 22px; box-shadow:0 9px 24px #0d2b3a11; }
+    .stat strong { display:block; font-size:2rem; line-height:1.15; color:#123f4a; }
+    .stat span { color:var(--muted); font-size:.9rem; }
+    .notice { border-left:4px solid var(--teal); background:#e8f5f1; padding:14px 18px; border-radius:0 10px 10px 0; margin-bottom:32px; }
+    h2 { font-size:1.55rem; letter-spacing:-.02em; margin:36px 0 4px; }
+    .section-intro { color:var(--muted); margin:0 0 18px; }
+    .finding { background:#fff; border:1px solid var(--line); border-radius:16px; padding:22px; margin:14px 0; box-shadow:0 4px 14px #0d2b3a08; }
+    .finding-head { display:flex; align-items:start; gap:14px; }
+    .finding-num { background:#eef3f5; border-radius:10px; padding:6px 10px; color:#43606c; font-weight:800; }
+    .finding-title { min-width:0; flex:1; }
+    h3 { font-size:1rem; overflow-wrap:anywhere; margin:7px 0 0; }
+    .pill,.severity { font-size:.75rem; font-weight:800; letter-spacing:.02em; border-radius:999px; padding:3px 9px; }
+    .pill.sql { background:#fff0dc; color:#92500a; } .pill.xss { background:#fce9ef; color:#a22c53; } .pill.other { background:#e9ecff; color:#374ca0; }
+    .severity { color:#9a3043; background:#fff0f1; }
+    .message { margin:14px 0 9px; } .location { color:var(--muted); font-size:.9rem; margin-bottom:9px; }
+    pre { margin:0; background:#102b3b; color:#e9f3f6; border-radius:10px; padding:12px 0; overflow-x:auto; font:13px/1.55 Consolas,monospace; }
+    .code-line { display:flex; padding:0 14px; white-space:pre; } .code-line.active { background:#185069; border-left:3px solid #59d3b6; padding-left:11px; }
+    .line-no { flex:none; width:45px; color:#91aebc; user-select:none; }
+    .explain { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+    .explain div { background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px; }
+    .explain strong { display:block; margin-bottom:5px; }
+    footer { color:var(--muted); font-size:.9rem; margin-top:40px; border-top:1px solid var(--line); padding-top:18px; }
+    @media(max-width:650px) { .stats,.explain { grid-template-columns:1fr; } .stats { margin:18px 0; } header { padding:30px 24px; } .finding-head { flex-wrap:wrap; } }
+  </style>
+</head>
+<body>
+<header><div class="eyebrow">Seguridad informática · Parcial · Grupo 3</div><h1>Hallazgos de Semgrep</h1>
+<p class="subtitle">Resultado del análisis estático de <strong>app.py</strong>. Ejemplos vulnerables creados para un laboratorio local.</p></header>
+<main>
+  <div class="stats"><div class="stat"><strong>2</strong><span>Hallazgos con reglas propias</span></div>
+  <div class="stat"><strong>8</strong><span>Avisos con reglas comunitarias</span></div>
+  <div class="stat"><strong>2</strong><span>Zonas inseguras preparadas</span></div></div>
+  <div class="notice"><strong>Cómo leer el reporte.</strong> Los avisos comunitarios pueden señalar varias veces el mismo fragmento. 8 avisos no significan 8 vulnerabilidades distintas. Revisa cada resultado en su contexto.</div>
+  <h2>Reglas del proyecto</h2><p class="section-intro">Dos patrones diseñados para explicar la diferencia entre código inseguro y corregido.</p>
+  
+    <article class="finding" data-category="sql">
+      <div class="finding-head">
+        <div class="finding-num">01</div>
+        <div class="finding-title"><span class="pill sql">SQL injection</span>
+          <h3>laboratorio-sql-fstring</h3></div>
+        <span class="severity">ERROR</span>
+      </div>
+      <p class="message">Consulta SQL construida con f-string: usa parametros de sqlite3.</p>
+      <div class="location">app.py · línea 42–44</div>
+      <pre><code><span class="code-line"><span class="line-no">040</span><span>def buscar_inseguro():</span></span>
+<span class="code-line"><span class="line-no">041</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">042</span><span>    rows = database().execute(</span></span>
+<span class="code-line active"><span class="line-no">043</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
+<span class="code-line active"><span class="line-no">044</span><span>    ).fetchall()</span></span>
+<span class="code-line"><span class="line-no">045</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span>
+<span class="code-line"><span class="line-no">046</span><span></span></span></code></pre>
+    </article>
+    <article class="finding" data-category="xss">
+      <div class="finding-head">
+        <div class="finding-num">02</div>
+        <div class="finding-title"><span class="pill xss">XSS / HTML</span>
+          <h3>laboratorio-html-markup-fstring</h3></div>
+        <span class="severity">ERROR</span>
+      </div>
+      <p class="message">HTML marcado como seguro con datos interpolados: usa autoescape de Jinja.</p>
+      <div class="location">app.py · línea 60</div>
+      <pre><code><span class="code-line"><span class="line-no">058</span><span>def saludo_inseguro():</span></span>
+<span class="code-line"><span class="line-no">059</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">060</span><span>    return Markup(f&quot;&lt;h1&gt;Hola, {name}&lt;/h1&gt;&quot;)</span></span>
+<span class="code-line"><span class="line-no">061</span><span></span></span>
+<span class="code-line"><span class="line-no">062</span><span></span></span></code></pre>
+    </article>
+  <h2>Reglas comunitarias</h2><p class="section-intro">Escaneo con <code>--config auto</code>. El número puede cambiar cuando Semgrep actualice sus reglas.</p>
+  
+    <article class="finding" data-category="sql">
+      <div class="finding-head">
+        <div class="finding-num">01</div>
+        <div class="finding-title"><span class="pill sql">SQL injection</span>
+          <h3>python.django.security.injection.sql.sql-injection-using-db-cursor-execute.sql-injection-db-cursor-execute</h3></div>
+        <span class="severity">WARNING</span>
+      </div>
+      <p class="message">User-controlled data from a request is passed to &#x27;execute()&#x27;. This could lead to a SQL injection and therefore protected information could be leaked. Instead, use django&#x27;s QuerySets, which are built with query parameterization and therefore not vulnerable to sql injection. For example, you could use `Entry.objects.filter(date=2006)`.</p>
+      <div class="location">app.py · línea 41–44</div>
+      <pre><code><span class="code-line"><span class="line-no">039</span><span>@app.get(&quot;/inseguro/buscar&quot;)</span></span>
+<span class="code-line"><span class="line-no">040</span><span>def buscar_inseguro():</span></span>
+<span class="code-line active"><span class="line-no">041</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">042</span><span>    rows = database().execute(</span></span>
+<span class="code-line active"><span class="line-no">043</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
+<span class="code-line active"><span class="line-no">044</span><span>    ).fetchall()</span></span>
+<span class="code-line"><span class="line-no">045</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span>
+<span class="code-line"><span class="line-no">046</span><span></span></span></code></pre>
+    </article>
+    <article class="finding" data-category="sql">
+      <div class="finding-head">
+        <div class="finding-num">02</div>
+        <div class="finding-title"><span class="pill sql">SQL injection</span>
+          <h3>python.lang.security.audit.formatted-sql-query.formatted-sql-query</h3></div>
+        <span class="severity">WARNING</span>
+      </div>
+      <p class="message">Detected possible formatted SQL query. Use parameterized queries instead.</p>
+      <div class="location">app.py · línea 42–44</div>
+      <pre><code><span class="code-line"><span class="line-no">040</span><span>def buscar_inseguro():</span></span>
+<span class="code-line"><span class="line-no">041</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">042</span><span>    rows = database().execute(</span></span>
+<span class="code-line active"><span class="line-no">043</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
+<span class="code-line active"><span class="line-no">044</span><span>    ).fetchall()</span></span>
+<span class="code-line"><span class="line-no">045</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span>
+<span class="code-line"><span class="line-no">046</span><span></span></span></code></pre>
+    </article>
+    <article class="finding" data-category="sql">
+      <div class="finding-head">
+        <div class="finding-num">03</div>
+        <div class="finding-title"><span class="pill sql">SQL injection</span>
+          <h3>python.sqlalchemy.security.sqlalchemy-execute-raw-query.sqlalchemy-execute-raw-query</h3></div>
+        <span class="severity">ERROR</span>
+      </div>
+      <p class="message">Avoiding SQL string concatenation: untrusted input concatenated with raw SQL query can result in SQL Injection. In order to execute raw query safely, prepared statement should be used. SQLAlchemy provides TextualSQL to easily used prepared statement with named parameters. For complex SQL composition, use SQL Expression Language or Schema Definition Language. In most cases, SQLAlchemy ORM will be a better option.</p>
+      <div class="location">app.py · línea 42–44</div>
+      <pre><code><span class="code-line"><span class="line-no">040</span><span>def buscar_inseguro():</span></span>
+<span class="code-line"><span class="line-no">041</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">042</span><span>    rows = database().execute(</span></span>
+<span class="code-line active"><span class="line-no">043</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
+<span class="code-line active"><span class="line-no">044</span><span>    ).fetchall()</span></span>
+<span class="code-line"><span class="line-no">045</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span>
+<span class="code-line"><span class="line-no">046</span><span></span></span></code></pre>
+    </article>
+    <article class="finding" data-category="sql">
+      <div class="finding-head">
+        <div class="finding-num">04</div>
+        <div class="finding-title"><span class="pill sql">SQL injection</span>
+          <h3>python.django.security.injection.tainted-sql-string.tainted-sql-string</h3></div>
+        <span class="severity">ERROR</span>
+      </div>
+      <p class="message">Detected user input used to manually construct a SQL string. This is usually bad practice because manual construction could accidentally result in a SQL injection. An attacker could use a SQL injection to steal or modify contents of the database. Instead, use a parameterized query which is available by default in most database engines. Alternatively, consider using the Django object-relational mappers (ORM) instead of raw SQL queries.</p>
+      <div class="location">app.py · línea 43</div>
+      <pre><code><span class="code-line"><span class="line-no">041</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line"><span class="line-no">042</span><span>    rows = database().execute(</span></span>
+<span class="code-line active"><span class="line-no">043</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
+<span class="code-line"><span class="line-no">044</span><span>    ).fetchall()</span></span>
+<span class="code-line"><span class="line-no">045</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span></code></pre>
+    </article>
+    <article class="finding" data-category="sql">
+      <div class="finding-head">
+        <div class="finding-num">05</div>
+        <div class="finding-title"><span class="pill sql">SQL injection</span>
+          <h3>python.flask.security.injection.tainted-sql-string.tainted-sql-string</h3></div>
+        <span class="severity">ERROR</span>
+      </div>
+      <p class="message">Detected user input used to manually construct a SQL string. This is usually bad practice because manual construction could accidentally result in a SQL injection. An attacker could use a SQL injection to steal or modify contents of the database. Instead, use a parameterized query which is available by default in most database engines. Alternatively, consider using an object-relational mapper (ORM) such as SQLAlchemy which will protect your queries.</p>
+      <div class="location">app.py · línea 43</div>
+      <pre><code><span class="code-line"><span class="line-no">041</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line"><span class="line-no">042</span><span>    rows = database().execute(</span></span>
+<span class="code-line active"><span class="line-no">043</span><span>        f&quot;SELECT username FROM users WHERE username = &#x27;{name}&#x27;&quot;</span></span>
+<span class="code-line"><span class="line-no">044</span><span>    ).fetchall()</span></span>
+<span class="code-line"><span class="line-no">045</span><span>    return {&quot;usuarios&quot;: [row[0] for row in rows]}</span></span></code></pre>
+    </article>
+    <article class="finding" data-category="xss">
+      <div class="finding-head">
+        <div class="finding-num">06</div>
+        <div class="finding-title"><span class="pill xss">XSS / HTML</span>
+          <h3>python.flask.security.xss.audit.explicit-unescape-with-markup.explicit-unescape-with-markup</h3></div>
+        <span class="severity">WARNING</span>
+      </div>
+      <p class="message">Detected explicitly unescaped content using &#x27;Markup()&#x27;. This permits the unescaped data to include unescaped HTML which could result in cross-site scripting. Ensure this data is not externally controlled, or consider rewriting to not use &#x27;Markup()&#x27;.</p>
+      <div class="location">app.py · línea 60</div>
+      <pre><code><span class="code-line"><span class="line-no">058</span><span>def saludo_inseguro():</span></span>
+<span class="code-line"><span class="line-no">059</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">060</span><span>    return Markup(f&quot;&lt;h1&gt;Hola, {name}&lt;/h1&gt;&quot;)</span></span>
+<span class="code-line"><span class="line-no">061</span><span></span></span>
+<span class="code-line"><span class="line-no">062</span><span></span></span></code></pre>
+    </article>
+    <article class="finding" data-category="xss">
+      <div class="finding-head">
+        <div class="finding-num">07</div>
+        <div class="finding-title"><span class="pill xss">XSS / HTML</span>
+          <h3>python.django.security.injection.raw-html-format.raw-html-format</h3></div>
+        <span class="severity">WARNING</span>
+      </div>
+      <p class="message">Detected user input flowing into a manually constructed HTML string. You may be accidentally bypassing secure methods of rendering HTML by manually constructing HTML and this could create a cross-site scripting vulnerability, which could let attackers steal sensitive user data. To be sure this is safe, check that the HTML is rendered safely. Otherwise, use templates (`django.shortcuts.render`) which will safely render HTML instead.</p>
+      <div class="location">app.py · línea 60</div>
+      <pre><code><span class="code-line"><span class="line-no">058</span><span>def saludo_inseguro():</span></span>
+<span class="code-line"><span class="line-no">059</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">060</span><span>    return Markup(f&quot;&lt;h1&gt;Hola, {name}&lt;/h1&gt;&quot;)</span></span>
+<span class="code-line"><span class="line-no">061</span><span></span></span>
+<span class="code-line"><span class="line-no">062</span><span></span></span></code></pre>
+    </article>
+    <article class="finding" data-category="xss">
+      <div class="finding-head">
+        <div class="finding-num">08</div>
+        <div class="finding-title"><span class="pill xss">XSS / HTML</span>
+          <h3>python.flask.security.injection.raw-html-concat.raw-html-format</h3></div>
+        <span class="severity">WARNING</span>
+      </div>
+      <p class="message">Detected user input flowing into a manually constructed HTML string. You may be accidentally bypassing secure methods of rendering HTML by manually constructing HTML and this could create a cross-site scripting vulnerability, which could let attackers steal sensitive user data. To be sure this is safe, check that the HTML is rendered safely. Otherwise, use templates (`flask.render_template`) which will safely render HTML instead.</p>
+      <div class="location">app.py · línea 60</div>
+      <pre><code><span class="code-line"><span class="line-no">058</span><span>def saludo_inseguro():</span></span>
+<span class="code-line"><span class="line-no">059</span><span>    name = request.args.get(&quot;nombre&quot;, &quot;&quot;)</span></span>
+<span class="code-line active"><span class="line-no">060</span><span>    return Markup(f&quot;&lt;h1&gt;Hola, {name}&lt;/h1&gt;&quot;)</span></span>
+<span class="code-line"><span class="line-no">061</span><span></span></span>
+<span class="code-line"><span class="line-no">062</span><span></span></span></code></pre>
+    </article>
+  <h2>Cómo se corrigieron los ejemplos</h2>
+  <div class="explain"><div><strong>Consulta SQL</strong>La ruta segura usa <code>WHERE username = ?</code> y entrega el nombre como parámetro separado. Así el dato no se interpreta como parte de la instrucción SQL.</div>
+  <div><strong>Salida HTML</strong>La ruta segura usa <code>render_template</code> con una variable en <code>templates/saludo.html</code>; Jinja escapa caracteres HTML de la entrada.</div></div>
+  <footer>Reporte generado localmente por <code>scripts/generar_reporte.py</code>. Fuente: Semgrep CLI y <code>app.py</code>. Para actualizarlo, vuelve a ejecutar el generador.</footer>
+</main></body></html>

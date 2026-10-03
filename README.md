@@ -48,6 +48,16 @@ El primer comando ejecuta dos reglas creadas para esta demo y debe mostrar **dos
 
 `hallazgos.json` es evidencia generada; revisa su contenido antes de compartirlo. El archivo fuente contiene patrones inseguros intencionales.
 
+## Ver los hallazgos en HTML
+
+Ya se incluye [un reporte HTML listo para abrir](reportes/semgrep.html). Haz doble clic en el archivo o ábrelo desde el navegador. Para actualizarlo después de editar el código:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\generar_reporte.py
+```
+
+El generador ejecuta Semgrep dos veces: con `reglas.yml` y con `--config auto`. La segunda ejecución puede requerir conexión para obtener las reglas comunitarias. El HTML es autocontenido y se puede abrir después sin conexión.
+
 ## Qué demuestra cada regla
 
 - `laboratorio-sql-fstring`: detecta una llamada `execute` con una consulta construida por `f-string`. La ruta segura usa un marcador `?` y pasa el valor como parámetro.
