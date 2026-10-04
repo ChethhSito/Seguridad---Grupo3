@@ -75,7 +75,7 @@ Estas reglas buscan **patrones concretos**, no prueban la explotabilidad por sí
 
 El workflow de GitHub Actions ejecuta un escaneo comunitario y uno con reglas propias. El segundo conserva los hallazgos esperados como demostración; su presencia no bloquea el workflow. Para un proyecto real, corrijan las fallas y configuren el escaneo como puerta de seguridad.
 
-También ejecuta las pruebas funcionales y `scripts/verificar_hallazgos.py`, que falla si cambia el número o el identificador de los hallazgos didácticos. Para ejecutar esta comprobación en Windows, activa primero `.venv` o agrega su carpeta `Scripts` al `PATH`.
+También ejecuta las pruebas funcionales y `scripts/verificar_hallazgos.py`, que falla si cambia el número o el identificador de los hallazgos didácticos. Puedes ejecutar esta comprobación con `.\.venv\Scripts\python.exe scripts\verificar_hallazgos.py`.
 
 ## Entregables sugeridos
 

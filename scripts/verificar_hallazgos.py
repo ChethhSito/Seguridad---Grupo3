@@ -2,6 +2,7 @@
 
 import json
 import os
+from pathlib import Path
 import subprocess
 import sys
 
@@ -13,7 +14,9 @@ EXPECTED = {
 
 
 def main():
-    command = ["semgrep", "scan", "--config", "reglas.yml", "--json", "app.py"]
+    local_binary = Path(sys.executable).with_name("semgrep.exe" if os.name == "nt" else "semgrep")
+    semgrep = str(local_binary) if local_binary.exists() else "semgrep"
+    command = [semgrep, "scan", "--config", "reglas.yml", "--json", "app.py"]
     environment = os.environ.copy()
     environment["PYTHONIOENCODING"] = "utf-8"
     scan = subprocess.run(
