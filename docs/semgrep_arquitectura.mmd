@@ -1,14 +1,17 @@
 flowchart LR
-    A[Codigo fuente<br/>app.py] --> C[Motor Semgrep CE]
-    B[Reglas YAML<br/>comunitarias y propias] --> C
-    C --> D[Hallazgos<br/>archivo, linea y regla]
-    D --> E[Revision humana<br/>confirmar y corregir]
-    E --> F[Volver a escanear]
-    F --> C
-    G[GitHub Actions<br/>push y pull request] --> C
-    D -. Plataforma comercial .-> H[Semgrep Multimodal<br/>IA para deteccion y triaje]
+    A[Codigo fuente] --> C[Analisis sintactico del codigo]
+    B[Reglas YAML<br/>patrones y metadatos] --> D[Analisis de patrones]
+    C --> E[AST generico del codigo]
+    D --> H[AST generico del patron]
+    E --> I[Motor Semgrep<br/>coincidencia estructural y flujo de datos]
+    H --> I
+    I --> F[Hallazgos<br/>regla, archivo, linea y severidad]
+    F --> G[Salida<br/>terminal, JSON o SARIF]
 
-    classDef local fill:#dff4ed,stroke:#087d6d,color:#17343b;
+    P[Pro Engine<br/>analisis entre funciones y archivos] -. ampliacion comercial .-> I
+    F -. plataforma comercial .-> M[Semgrep Multimodal<br/>IA para triaje y remediacion]
+
+    classDef core fill:#dff4ed,stroke:#087d6d,color:#17343b;
     classDef optional fill:#fff0d9,stroke:#b87413,color:#4d3416;
-    class A,B,C,D,E,F,G local;
-    class H optional;
+    class A,B,C,D,E,F,G,H,I core;
+    class P,M optional;

@@ -3,10 +3,11 @@ Preparado para 4 diapositivas. Los datos comerciales pueden cambiar; fuentes al 
 
 DIAPOSITIVA 1. ARQUITECTURA Y SINTAXIS DE REGLAS
 • Entrada: código fuente y reglas de la comunidad o reglas propias en YAML.
-• El motor Semgrep compara estructuras del código con patrones; entrega archivo, línea, regla y mensaje del hallazgo. No necesita ejecutar la aplicación.
+• Semgrep analiza el código y los patrones, los representa estructuralmente (AST genérico) y busca coincidencias. Entrega archivo, línea, regla y mensaje del hallazgo sin ejecutar la aplicación.
 • Una regla incluye id, languages, severity, message y pattern. Las metavariables como $DB permiten reconocer variantes del mismo patrón.
 • Ejemplo del proyecto: $DB.execute(f"...") detecta una consulta SQL construida con f-string; la alternativa segura usa parámetros.
 Nota para exponer: un hallazgo exige revisión humana; una coincidencia no confirma por sí sola el impacto.
+Diagrama complementario: semgrep_arquitectura.mmd describe Semgrep en general, no la arquitectura de nuestro repositorio. Las cajas de Pro Engine y Multimodal son ampliaciones comerciales opcionales.
 
 DIAPOSITIVA 2. SEMGREP MULTIMODAL: SAST + IA
 • Semgrep Multimodal, ofrecido en la plataforma comercial, combina análisis basado en reglas con razonamiento de IA para detección, triaje y recomendaciones de corrección.
@@ -30,6 +31,8 @@ Nota para exponer: distinguir escaneo en CI de un hook local pre-commit.
 
 FUENTES OFICIALES
 Arquitectura y reglas: https://semgrep.dev/products/community-edition/
+Comparación estructural y AST genérico: https://semgrep.dev/blog/2020/type-awareness-in-semantic-grep/
+Pro Engine: https://semgrep.dev/products/pro-engine/
 Sintaxis y metavariables: https://semgrep.dev/docs/writing-rules/glossary/
 Multimodal: https://semgrep.dev/products/semgrep-multimodal/
 Comparación CE/Pro: https://semgrep.dev/products/semgrep-vs-ce/
