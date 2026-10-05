@@ -1,0 +1,37 @@
+CONTENIDO PARA PPT — SEMGREP (GRUPO 3, PARCIAL)
+Preparado para 4 diapositivas. Los datos comerciales pueden cambiar; fuentes al final.
+
+DIAPOSITIVA 1. ARQUITECTURA Y SINTAXIS DE REGLAS
+• Entrada: código fuente y reglas de la comunidad o reglas propias en YAML.
+• El motor Semgrep compara estructuras del código con patrones; entrega archivo, línea, regla y mensaje del hallazgo. No necesita ejecutar la aplicación.
+• Una regla incluye id, languages, severity, message y pattern. Las metavariables como $DB permiten reconocer variantes del mismo patrón.
+• Ejemplo del proyecto: $DB.execute(f"...") detecta una consulta SQL construida con f-string; la alternativa segura usa parámetros.
+Nota para exponer: un hallazgo exige revisión humana; una coincidencia no confirma por sí sola el impacto.
+
+DIAPOSITIVA 2. SEMGREP MULTIMODAL: SAST + IA
+• Semgrep Multimodal, ofrecido en la plataforma comercial, combina análisis basado en reglas con razonamiento de IA para detección, triaje y recomendaciones de corrección.
+• Las reglas localizan patrones; la IA puede considerar contexto adicional para priorizar hallazgos y reducir ruido.
+• Nuestro laboratorio usa Semgrep Community Edition y reglas propias. El reporte HTML es una visualización local; no demuestra Multimodal ni Assistant AI.
+Nota para exponer: presentar Multimodal como capacidad del producto, no como función que ya ejecutó la demo.
+
+DIAPOSITIVA 3. CATÁLOGO DE REGLAS: CIFRAS VERIFICABLES
+• La página oficial de Community Edition anuncia 3 000+ reglas comunitarias personalizables.
+• La comparación oficial de productos anuncia 900+ reglas Pro de alta confianza; su acceso depende del producto/plan.
+• La consigna menciona “20 000+ reglas propietarias”, pero no encontramos respaldo oficial actual para esa cifra. No presentarla como dato comprobado.
+• En nuestra prueba, --config auto seleccionó 290 reglas aplicables a app.py y produjo 8 avisos sobre dos zonas de código; las dos reglas propias produjeron 2 hallazgos.
+Nota para exponer: reglas disponibles, reglas ejecutadas y hallazgos son cantidades diferentes.
+
+DIAPOSITIVA 4. CI/CD Y FLUJO DE DESARROLLO
+• En el repositorio, GitHub Actions ejecuta pruebas y Semgrep al recibir push o pull_request.
+• Se combinan reglas comunitarias (--config auto) con reglas del proyecto (reglas.yml).
+• El desarrollador revisa cada aviso, corrige el código y repite el escaneo. La plataforma Semgrep puede añadir comentarios en PR y análisis de cambios si se configura.
+• Nuestro workflow verifica que el laboratorio conserve sus dos hallazgos intencionales; no es un hook pre-commit ni bloquea estos ejemplos vulnerables como política de producción.
+Nota para exponer: distinguir escaneo en CI de un hook local pre-commit.
+
+FUENTES OFICIALES
+Arquitectura y reglas: https://semgrep.dev/products/community-edition/
+Sintaxis y metavariables: https://semgrep.dev/docs/writing-rules/glossary/
+Multimodal: https://semgrep.dev/products/semgrep-multimodal/
+Comparación CE/Pro: https://semgrep.dev/products/semgrep-vs-ce/
+CI/CD: https://semgrep.dev/docs/semgrep-ci/sample-ci-configs
+Código del proyecto: https://github.com/ChethhSito/Seguridad---Grupo3
