@@ -1,0 +1,2 @@
+# Muestra para Semgrep. No instalar este archivo.
+PyYAML==5.3.1

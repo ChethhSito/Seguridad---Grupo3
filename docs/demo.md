@@ -12,12 +12,13 @@
 | Tiempo | Acción | Qué explicar |
 | --- | --- | --- |
 | 0–1 min | Enseñar las cuatro rutas | Mismo comportamiento funcional con dos implementaciones. |
-| 1–3 min | Abrir `buscar_inseguro` y `buscar_seguro` | La interpolación forma parte de la consulta; el parámetro separa dato y SQL. |
-| 3–5 min | Abrir `saludo_inseguro` y `saludo_seguro` | `Markup` declara confiable el HTML; Jinja escapa una variable normal. |
-| 5–7 min | Ejecutar `semgrep scan --config reglas.yml app.py` | Leer archivo, línea, regla y mensaje de cada hallazgo. |
-| 7–8 min | Abrir `reglas.yml` | Identificar `id`, `pattern`, `message`, lenguaje y severidad. |
-| 8–9 min | Ejecutar `semgrep scan --config auto app.py` | Comparar reglas comunitarias y propias sin prometer un número fijo de hallazgos. |
-| 9–10 min | Mostrar pruebas y workflow | Explicar cómo repetir el análisis y qué límites tiene. |
+| 1–2 min | Abrir `buscar_inseguro` y `saludo_inseguro` junto a sus correcciones | Un caso separa el dato del SQL; el otro deja que Jinja escape el HTML. |
+| 2–4 min | Ejecutar `semgrep scan --config reglas.yml app.py` | Leer archivo, línea, regla y mensaje de los dos hallazgos del laboratorio. |
+| 4–5 min | Abrir `reglas.yml` | Identificar `id`, `pattern`, `message`, lenguaje, severidad y la categoría OWASP. |
+| 5–7 min | Escanear `muestras/codigo_generado_ia.py` y `muestras/dependencias-ia.txt` | Es código generado por IA, no lo sirve la aplicación. Recorrer los 11 mensajes y su categoría OWASP. |
+| 7–8 min | Abrir `muestras/referencias_seguras.py` y ejecutar `scripts/precommit_semgrep.py` | La corrección queda limpia. El mismo escaneo con `--error` sobre la muestra de IA sí detiene el proceso. |
+| 8–9 min | Mostrar `.pre-commit-config.yaml` y `.github/workflows/semgrep.yml` | El hook y Actions repiten el bloqueo en cada cambio. Assistant exige cuenta y queda fuera de esta demo local. |
+| 9–10 min | Ejecutar `semgrep scan --config auto app.py` | Comparar reglas comunitarias y propias sin prometer un número fijo de hallazgos. |
 
 Para mostrar una corrección en directo, copia `app.py` a un archivo temporal local, sustituye en esa copia el fragmento inseguro por el equivalente seguro y vuelve a escanear la copia. Mantén `app.py` intacto para que la demostración sea repetible.
 
@@ -29,6 +30,9 @@ Para mostrar una corrección en directo, copia `app.py` a un archivo temporal lo
 - ¿Qué hace el autoescape de Jinja y por qué `Markup` puede anularlo?
 - ¿Qué casos no detectan estas dos reglas específicas?
 - ¿Qué aporta el análisis en cada cambio mediante CI?
+- ¿Qué categoría del OWASP Top 10 corresponde a cada hallazgo de la muestra de IA?
+- ¿Por qué el pre-commit deja pasar el laboratorio vulnerable y bloquea la corrección si esa corrección se rompe?
+- ¿Qué falta para mostrar Semgrep Assistant en vivo?
 
 **Regla de uso:** no ejecutar las rutas inseguras fuera de `localhost` ni usar estas técnicas contra sistemas sin autorización.
 

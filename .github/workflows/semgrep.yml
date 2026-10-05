@@ -22,6 +22,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Escanear el laboratorio con reglas comunitarias
-        run: semgrep scan --config auto app.py
+        run: semgrep scan --config auto --metrics=off app.py
       - name: Comprobar reglas del proyecto
         run: python scripts/verificar_hallazgos.py
+      - name: Bloquear regresiones en el codigo corregido
+        run: semgrep scan --config reglas.yml --error --metrics=off muestras/referencias_seguras.py muestras/dependencias-seguras.txt
+      - name: Comprobar la muestra generada por IA
+        run: python scripts/verificar_muestra_ia.py

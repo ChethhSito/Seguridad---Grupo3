@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: semgrep-codigo-corregido
+        name: Semgrep bloquea patrones inseguros en el codigo corregido
+        entry: python scripts/precommit_semgrep.py
+        language: system
+        pass_filenames: false
+        always_run: true

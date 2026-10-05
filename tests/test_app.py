@@ -1,4 +1,5 @@
 import unittest
+from pathlib import Path
 
 from app import app
 
@@ -36,6 +37,11 @@ class LabBehaviorTests(unittest.TestCase):
         self.assertIn(value, unsafe.get_data(as_text=True))
         self.assertNotIn(value, safe.get_data(as_text=True))
         self.assertIn("&lt;script&gt;", safe.get_data(as_text=True))
+
+    def test_ai_sample_is_not_served(self):
+        source = Path(__file__).resolve().parents[1].joinpath("app.py").read_text(encoding="utf-8")
+        self.assertNotIn("codigo_generado_ia", source)
+        self.assertNotIn("muestras", source)
 
 
 if __name__ == "__main__":

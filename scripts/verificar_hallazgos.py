@@ -7,29 +7,50 @@ import subprocess
 import sys
 
 
+ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = {
     "laboratorio-sql-fstring",
     "laboratorio-html-markup-fstring",
 }
 
 
+def semgrep_binary():
+    folder = "Scripts" if os.name == "nt" else "bin"
+    name = "semgrep.exe" if os.name == "nt" else "semgrep"
+    candidate = ROOT / ".venv" / folder / name
+    return str(candidate) if candidate.exists() else "semgrep"
+
+
+def normalize(check_id):
+    name = check_id.replace("\\", "/").split("/")[-1]
+    prefix = "reglas."
+    return name[len(prefix):] if name.startswith(prefix) else name
+
+
 def main():
-    local_binary = Path(sys.executable).with_name("semgrep.exe" if os.name == "nt" else "semgrep")
-    semgrep = str(local_binary) if local_binary.exists() else "semgrep"
-    command = [semgrep, "scan", "--config", "reglas.yml", "--json", "app.py"]
     environment = os.environ.copy()
     environment["PYTHONIOENCODING"] = "utf-8"
+    command = [
+        semgrep_binary(), "scan", "--config", "reglas.yml", "--json",
+        "--metrics=off", "app.py",
+    ]
     scan = subprocess.run(
-        command, capture_output=True, text=True, encoding="utf-8", errors="replace",
-        env=environment, check=False
+        command, cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+        errors="replace", env=environment, check=False,
     )
-    if scan.returncode != 0:
+    if not scan.stdout:
         print(scan.stderr, file=sys.stderr)
-        return scan.returncode
+        print(
+            "Semgrep no produjo un reporte. En Windows, Smart App Control puede estar bloqueando semgrep-core.exe.",
+            file=sys.stderr,
+        )
+        return scan.returncode or 1
 
     report = json.loads(scan.stdout)
-    findings = report["results"]
-    observed = [item["check_id"] for item in findings]
+    if report.get("errors"):
+        print(report["errors"], file=sys.stderr)
+        return 1
+    observed = [normalize(item["check_id"]) for item in report["results"]]
     if len(observed) != 2 or set(observed) != EXPECTED:
         print(f"Hallazgos inesperados: {observed}", file=sys.stderr)
         return 1

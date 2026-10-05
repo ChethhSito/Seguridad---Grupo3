@@ -1,0 +1,2 @@
+# Versión corregida de la muestra. No sustituye a requirements.txt.
+PyYAML>=6.0.2
