@@ -17,7 +17,7 @@
 | 4–5 min | Abrir `reglas.yml` | Identificar `id`, `pattern`, `message`, lenguaje, severidad y la categoría OWASP. |
 | 5–7 min | Escanear `muestras/codigo_generado_ia.py` y `muestras/dependencias-ia.txt` | Es código generado por IA, no lo sirve la aplicación. Recorrer los 11 mensajes y su categoría OWASP. |
 | 7–8 min | Abrir `muestras/referencias_seguras.py` y ejecutar `scripts/precommit_semgrep.py` | La corrección queda limpia. El mismo escaneo con `--error` sobre la muestra de IA sí detiene el proceso. |
-| 8–9 min | Mostrar `.pre-commit-config.yaml` y `.github/workflows/semgrep.yml` | El hook y Actions repiten el bloqueo en cada cambio. Assistant exige cuenta y queda fuera de esta demo local. |
+| 8–9 min | Mostrar `.pre-commit-config.yaml` y `.github/workflows/semgrep.yml` | El hook y Actions repiten el bloqueo en cada cambio. |
 | 9–10 min | Ejecutar `semgrep scan --config auto app.py` | Comparar reglas comunitarias y propias sin prometer un número fijo de hallazgos. |
 
 Para mostrar una corrección en directo, copia `app.py` a un archivo temporal local, sustituye en esa copia el fragmento inseguro por el equivalente seguro y vuelve a escanear la copia. Mantén `app.py` intacto para que la demostración sea repetible.
@@ -32,7 +32,7 @@ Para mostrar una corrección en directo, copia `app.py` a un archivo temporal lo
 - ¿Qué aporta el análisis en cada cambio mediante CI?
 - ¿Qué categoría del OWASP Top 10 corresponde a cada hallazgo de la muestra de IA?
 - ¿Por qué el pre-commit deja pasar el laboratorio vulnerable y bloquea la corrección si esa corrección se rompe?
-- ¿Qué falta para mostrar Semgrep Assistant en vivo?
+- ¿Cómo se muestra el triaje automático en la plataforma de Semgrep?
 
 **Regla de uso:** no ejecutar las rutas inseguras fuera de `localhost` ni usar estas técnicas contra sistemas sin autorización.
 

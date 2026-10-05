@@ -121,6 +121,7 @@ También ejecuta las pruebas funcionales y `scripts/verificar_hallazgos.py`, que
 
 ## Entregables sugeridos
 
+- [Guía para repetir los seis puntos](docs/guia-seis-puntos.md)
 - [Guion de demo](docs/demo.md)
 - [Base del informe técnico](docs/informe.md)
 - Captura o video de la ejecución, y `hallazgos.json` revisado
