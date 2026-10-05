@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Escanear el laboratorio con reglas comunitarias
-        run: semgrep scan --config auto --metrics=off app.py
+        run: semgrep scan --config auto app.py
       - name: Comprobar reglas del proyecto
         run: python scripts/verificar_hallazgos.py
       - name: Bloquear regresiones en el codigo corregido
