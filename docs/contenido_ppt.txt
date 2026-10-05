@@ -1,40 +1,37 @@
-CONTENIDO PARA PPT — SEMGREP (GRUPO 3, PARCIAL)
-Preparado para 4 diapositivas. Los datos comerciales pueden cambiar; fuentes al final.
+CONTENIDO PARA PPT — SEMGREP (ENFOQUE GENERAL)
+Cuatro diapositivas de contenido. Este texto describe el producto, no un repositorio de práctica.
 
-DIAPOSITIVA 1. ARQUITECTURA Y SINTAXIS DE REGLAS
-• Entrada: código fuente y reglas de la comunidad o reglas propias en YAML.
-• Semgrep analiza el código y los patrones, los representa estructuralmente (AST genérico) y busca coincidencias. Entrega archivo, línea, regla y mensaje del hallazgo sin ejecutar la aplicación.
-• Una regla incluye id, languages, severity, message y pattern. Las metavariables como $DB permiten reconocer variantes del mismo patrón.
-• Ejemplo del proyecto: $DB.execute(f"...") detecta una consulta SQL construida con f-string; la alternativa segura usa parámetros.
-Nota para exponer: un hallazgo exige revisión humana; una coincidencia no confirma por sí sola el impacto.
-Diagrama complementario: semgrep_arquitectura.mmd describe Semgrep en general, no la arquitectura de nuestro repositorio. Las cajas de Pro Engine y Multimodal son ampliaciones comerciales opcionales.
+DIAPOSITIVA 1. ARQUITECTURA DE SEMGREP Y SINTAXIS DE REGLAS
+• Semgrep es una herramienta SAST: analiza código fuente sin ejecutar la aplicación.
+• Recibe archivos de código y reglas YAML. Analiza la estructura de ambos, compara patrones y produce hallazgos con regla, ubicación y severidad.
+• Las reglas pueden buscar patrones estructurales o seguir el flujo de datos desde una fuente hasta una operación sensible (análisis de taint).
+• Una regla típica define id, languages, severity, message y pattern. Las metavariables, como $X, hacen que un patrón coincida con diferentes expresiones.
+Idea para explicar: el AST genérico permite comparar la forma del código; Semgrep no depende solo de buscar texto literal.
 
 DIAPOSITIVA 2. SEMGREP MULTIMODAL: SAST + IA
-• Semgrep Multimodal, ofrecido en la plataforma comercial, combina análisis basado en reglas con razonamiento de IA para detección, triaje y recomendaciones de corrección.
-• Las reglas localizan patrones; la IA puede considerar contexto adicional para priorizar hallazgos y reducir ruido.
-• Nuestro laboratorio usa Semgrep Community Edition y reglas propias. El reporte HTML es una visualización local; no demuestra Multimodal ni Assistant AI.
-Nota para exponer: presentar Multimodal como capacidad del producto, no como función que ya ejecutó la demo.
+• Semgrep Multimodal combina hallazgos basados en reglas con razonamiento de IA para detección, triaje y orientación de corrección.
+• El motor determinista identifica patrones y aporta contexto técnico; la IA evalúa información adicional para priorizar casos y reducir avisos irrelevantes.
+• Esta capacidad pertenece a la plataforma Semgrep. La edición comunitaria permite escanear con reglas, pero no implica por sí sola que Multimodal esté activo.
+Idea para explicar: SAST señala un posible problema; el análisis con IA ayuda a decidir cuáles hallazgos merecen atención primero.
 
-DIAPOSITIVA 3. CATÁLOGO DE REGLAS: CIFRAS VERIFICABLES
-• La página oficial de Community Edition anuncia 3 000+ reglas comunitarias personalizables.
-• La comparación oficial de productos anuncia 900+ reglas Pro de alta confianza; su acceso depende del producto/plan.
-• La consigna menciona “20 000+ reglas propietarias”, pero no encontramos respaldo oficial actual para esa cifra. No presentarla como dato comprobado.
-• En nuestra prueba, --config auto seleccionó 290 reglas aplicables a app.py y produjo 8 avisos sobre dos zonas de código; las dos reglas propias produjeron 2 hallazgos.
-Nota para exponer: reglas disponibles, reglas ejecutadas y hallazgos son cantidades diferentes.
+DIAPOSITIVA 3. COBERTURA Y CATÁLOGO DE REGLAS
+• Semgrep Community Edition anuncia más de 3 000 reglas comunitarias personalizables.
+• La comparación oficial de productos anuncia más de 900 reglas Pro de alta confianza para la plataforma comercial.
+• Hay reglas para clases de fallas como inyección, XSS, SSRF y errores de configuración; también se pueden crear reglas específicas de una organización.
+• La cifra “20 000+ reglas propietarias” aparece en la consigna del curso, pero no tiene respaldo en las fuentes oficiales actuales consultadas. Evitar presentarla como cifra comprobada.
+Idea para explicar: reglas publicadas, reglas seleccionadas para un lenguaje y hallazgos detectados son cantidades distintas.
 
-DIAPOSITIVA 4. CI/CD Y FLUJO DE DESARROLLO
-• En el repositorio, GitHub Actions ejecuta pruebas y Semgrep al recibir push o pull_request.
-• Se combinan reglas comunitarias (--config auto) con reglas del proyecto (reglas.yml).
-• El desarrollador revisa cada aviso, corrige el código y repite el escaneo. La plataforma Semgrep puede añadir comentarios en PR y análisis de cambios si se configura.
-• Nuestro workflow verifica que el laboratorio conserve sus dos hallazgos intencionales; no es un hook pre-commit ni bloquea estos ejemplos vulnerables como política de producción.
-Nota para exponer: distinguir escaneo en CI de un hook local pre-commit.
+DIAPOSITIVA 4. INTEGRACIÓN EN CI/CD Y FLUJO DE DESARROLLO
+• Semgrep puede ejecutarse localmente y en pipelines como GitHub Actions, GitLab CI/CD o CircleCI.
+• En una solicitud de cambios, el pipeline puede analizar el código, publicar resultados y ayudar a revisar problemas antes de integrar la modificación.
+• El flujo recomendado es escanear, revisar los hallazgos, corregir el código y volver a escanear; la plataforma puede ofrecer análisis de cambios y comentarios en PR/MR.
+• Un hook local pre-commit y un workflow de CI son mecanismos diferentes: el primero corre antes del commit y el segundo en la plataforma de integración.
+Idea para explicar: integrar el análisis en el desarrollo permite detectar problemas antes de que lleguen a producción.
 
 FUENTES OFICIALES
-Arquitectura y reglas: https://semgrep.dev/products/community-edition/
-Comparación estructural y AST genérico: https://semgrep.dev/blog/2020/type-awareness-in-semantic-grep/
-Pro Engine: https://semgrep.dev/products/pro-engine/
-Sintaxis y metavariables: https://semgrep.dev/docs/writing-rules/glossary/
-Multimodal: https://semgrep.dev/products/semgrep-multimodal/
-Comparación CE/Pro: https://semgrep.dev/products/semgrep-vs-ce/
-CI/CD: https://semgrep.dev/docs/semgrep-ci/sample-ci-configs
-Código del proyecto: https://github.com/ChethhSito/Seguridad---Grupo3
+Semgrep Community Edition: https://semgrep.dev/products/community-edition/
+Glosario de reglas, patrones y metavariables: https://semgrep.dev/docs/writing-rules/glossary/
+AST genérico y comparación estructural: https://semgrep.dev/blog/2020/type-awareness-in-semantic-grep/
+Semgrep Multimodal: https://semgrep.dev/products/semgrep-multimodal/
+Comparación Community Edition y plataforma: https://semgrep.dev/products/semgrep-vs-ce/
+Configuración de CI: https://semgrep.dev/docs/semgrep-ci/sample-ci-configs
